@@ -13,6 +13,7 @@ public class HttpRequestParser {
         String method = "";
         String path = "";
         HashMap<String, String> headers = new HashMap<>();
+        String body = "";
 
         while ((line = reader.readLine()) != null && !line.isEmpty()) {
             Matcher requestMatcher = request.matcher(line);
@@ -27,8 +28,20 @@ public class HttpRequestParser {
                 var headerValue = headerMatcher.group(2);
                 headers.put(headerKey, headerValue);
             }
+
+            int contentLength = Integer.parseInt(headers.getOrDefault("Content-Length", "0"));
+            if (contentLength > 0) {
+                char[] bodyChar = new char[contentLength];
+                int totalRead = 0;
+                while (totalRead < contentLength) {
+                    int read = reader.read(bodyChar, totalRead, contentLength - totalRead);
+                    if (read == -1) break;
+                    totalRead += read;
+                }
+                body = new String(bodyChar);
+            }
         }
 
-        return new Request(method, path, headers);
+        return new Request(method, path, headers, body);
     }
 }
