@@ -28,18 +28,18 @@ public class HttpRequestParser {
                 var headerValue = headerMatcher.group(2);
                 headers.put(headerKey, headerValue);
             }
+        }
 
-            int contentLength = Integer.parseInt(headers.getOrDefault("Content-Length", "0"));
-            if (contentLength > 0) {
-                char[] bodyChar = new char[contentLength];
-                int totalRead = 0;
-                while (totalRead < contentLength) {
-                    int read = reader.read(bodyChar, totalRead, contentLength - totalRead);
-                    if (read == -1) break;
-                    totalRead += read;
-                }
-                body = new String(bodyChar);
+        int contentLength = Integer.parseInt(headers.getOrDefault("Content-Length", "0"));
+        if (contentLength > 0) {
+            char[] bodyChar = new char[contentLength];
+            int totalRead = 0;
+            while (totalRead < contentLength) {
+                int read = reader.read(bodyChar, totalRead, contentLength - totalRead);
+                if (read == -1) break;
+                totalRead += read;
             }
+            body = new String(bodyChar);
         }
 
         return new Request(method, path, headers, body);
