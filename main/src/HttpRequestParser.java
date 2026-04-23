@@ -15,8 +15,17 @@ public class HttpRequestParser {
         HashMap<String, String> headers = new HashMap<>();
         String body = "";
 
+        String firstLine =  reader.readLine();
+        if (firstLine == null) return null;
+
+        Matcher requestMatcher = request.matcher(firstLine);
+        if (requestMatcher.find()) {
+            method = requestMatcher.group(1);
+            path = requestMatcher.group(2);
+        }
+
         while ((line = reader.readLine()) != null && !line.isEmpty()) {
-            Matcher requestMatcher = request.matcher(line);
+            requestMatcher = request.matcher(line);
             if (requestMatcher.find()) {
                 method = requestMatcher.group(1);
                 path = requestMatcher.group(2);

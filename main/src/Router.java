@@ -1,4 +1,5 @@
 import java.lang.reflect.Array;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 
@@ -10,7 +11,7 @@ public class Router {
             var body = """
                     {
                         "message": "You successfully signed in!",
-                        "error": null  
+                        "error": null
                     }
                     """;
             var response = """
@@ -19,13 +20,12 @@ public class Router {
                     Content-Length: %d
                     
                     %s
-                    """.formatted(body.getBytes().length, body);
+                    """.formatted(body.getBytes(StandardCharsets.UTF_8).length, body);
 
             out.write(response.getBytes());
         });
 
-        routes.put("/slow", (req, out) -> {
-            Thread.sleep(5000);
+        routes.put("/fast", (req, out) -> {
             var body = """
                     <!DOCTYPE html>
                     <html>
@@ -42,7 +42,7 @@ public class Router {
                     Content-Length: %d
                     
                     %s
-                    """.formatted(body.getBytes().length, body);
+                    """.formatted(body.getBytes(StandardCharsets.UTF_8).length+1, body);
             out.write(response.getBytes());
         });
     }
